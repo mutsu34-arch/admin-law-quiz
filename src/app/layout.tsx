@@ -1,0 +1,20 @@
+import type { Metadata } from "next";
+import { AuthProvider } from "@/lib/auth-context";
+import "./globals.css";
+
+export const metadata: Metadata = {
+  title: "행정법 퀴즈",
+  description: "행정법 기출문제 OX 퀴즈",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
+  return (
+    <html lang="ko">
+      <body className="antialiased">
+        <AuthProvider>{children}</AuthProvider>
+      </body>
+    </html>
+  );
+}
