@@ -26,7 +26,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
+  // 무한 로딩 방지: 처음부터 false로 시작 (로그인 화면 바로 표시)
+  const [loading, setLoading] = useState(false);
 
   const refreshProfile = async () => {
     if (!user || !db) return;
@@ -41,6 +42,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(false);
       return;
     }
+    // 무한 로딩 방지: 3초 후 강제로 로딩 해제
+    const timeout = setTimeout(() => setLoading(false), 3000);
     const unsub = onAuthStateChanged(auth, async (u) => {
       setUser(u);
       if (u && db) {
@@ -63,7 +66,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       setLoading(false);
     });
-    return () => unsub();
+    return () => {
+      clearTimeout(timeout);
+      unsub();
+    };
   }, []);
 
   const signInWithGoogle = async () => {
