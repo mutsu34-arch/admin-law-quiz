@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { CreemCheckout } from "@creem_io/nextjs";
@@ -8,7 +8,7 @@ import { useAuth } from "@/lib/auth-context";
 
 const MONTHLY_PRODUCT_ID = "prod_11zv1ykGBOY0V9x4G3mp5X";
 
-export default function PricingPage() {
+function PricingContent() {
   const { user, profile, refreshProfile } = useAuth();
   const searchParams = useSearchParams();
 
@@ -53,5 +53,13 @@ export default function PricingPage() {
         테스트 모드입니다. 실제 결제는 되지 않습니다.
       </p>
     </div>
+  );
+}
+
+export default function PricingPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-slate-100 p-6 flex items-center justify-center">로딩 중...</div>}>
+      <PricingContent />
+    </Suspense>
   );
 }
